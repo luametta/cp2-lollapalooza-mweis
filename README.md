@@ -1,176 +1,95 @@
-# LollapaloozaApiCp2
+# 🎵 Lollapalooza API
 
-API REST desenvolvida em Spring Boot para gerenciamento de dias do evento e palcos do festival Lollapalooza, com acesso a banco de dados MySQL, documentacao Swagger/OpenAPI, configuracao por profiles e execucao com Docker.
+API desenvolvida em Java com Spring Boot para gerenciamento de informações relacionadas ao festival Lollapalooza, incluindo dias do evento e palcos.
 
-Check Point 1 — Microservices and Web Engineering — Prof. Antonio Carlos de Lima Junior.
+---
 
-Repositorio GitHub: https://github.com/luametta/cp2-lollapalooza-mweis
-Repositorio Docker Hub: https://hub.docker.com/r/luametta/cp2-lollapalooza-mweis
+## 📌 Descrição do Projeto
 
-## Pre-requisitos
+Este projeto consiste em uma API REST que permite realizar operações de CRUD (Create, Read, Update, Delete) para as entidades:
 
-Para executar o projeto localmente, voce vai precisar ter instalado:
+* **Dia**: representa os dias do evento
+* **Palco**: representa os palcos onde ocorrem os shows
 
-- Java 17
-- Maven
-- MySQL
-- Docker (opcional)
+A aplicação segue uma arquitetura padrão em camadas:
 
-## Execucao local
+* **Controller**: responsável pelos endpoints da API
+* **Model**: representa as entidades do sistema
+* **Repository**: interface de acesso ao banco de dados
 
-### 1. Configuracao das variaveis de ambiente
+---
 
-A aplicacao utiliza variaveis de ambiente para configurar a conexao com o banco de dados e o profile do Spring Boot.
+## 🚀 Tecnologias Utilizadas
 
-| Variavel | Descricao | Exemplo |
-| :--- | :--- | :--- |
-| `DB_SERVER_URL` | Endereco do servidor do banco de dados | `localhost` |
-| `DB_SERVER_PORT` | Porta do banco de dados | `3306` |
-| `DB_SCHEMA` | Nome do schema | `lollapalooza` |
-| `DB_USER` | Usuario do banco de dados | `root` |
-| `DB_PWD` | Senha do banco de dados | `root_pwd` |
-| `SPRING_PROFILES_ACTIVE` | Profile ativo do Spring Boot | `default` |
+* Java 17
+* Spring Boot
+* Maven
+* Spring Data JPA
+* Docker
+* Swagger / OpenAPI
+* Banco de dados relacional (H2 para desenvolvimento / MySQL/PostgreSQL configurável via profiles)
 
-No profile default, se as variaveis nao forem definidas, a aplicacao usa valores padrao (localhost, 3306, lollapalooza, root, root_pwd).
+---
 
-**Linux / macOS**
-```bash
-export DB_SERVER_URL=localhost
-export DB_SERVER_PORT=3306
-export DB_SCHEMA=lollapalooza
-export DB_USER=root
-export DB_PWD=root_pwd
-export SPRING_PROFILES_ACTIVE=default
+## 📂 Estrutura do Projeto
+
+```text
+src/main/java/br/fiap/cp1/lollapalooza
+│
+├── controller
+│   ├── DiaController.java
+│   └── PalcoController.java
+│
+├── model
+│   ├── Dia.java
+│   └── Palco.java
+│
+├── repository
+│   ├── DiaRepository.java
+│   └── PalcoRepository.java
+│
+└── LollaAPI.java
 ```
 
-**Windows PowerShell**
-```powershell
-$env:DB_SERVER_URL="localhost"
-$env:DB_SERVER_PORT="3306"
-$env:DB_SCHEMA="lollapalooza"
-$env:DB_USER="root"
-$env:DB_PWD="root_pwd"
-$env:SPRING_PROFILES_ACTIVE="default"
-```
+---
 
-### 2. Executar a aplicacao
+## ⚙️ Como Executar o Projeto
 
-Com Maven:
+### Pré-requisitos
 
-```bash
-mvn spring-boot:run
-```
+* Java 17+ (ou versão compatível)
+* Maven instalado (ou usar o wrapper incluído)
+* Docker (para execução via container)
 
-Ou utilizando o Maven Wrapper:
+### Execução Local (Profile Default)
+
+1. Clone o repositório ou extraia o arquivo `.zip`
+2. Acesse a pasta do projeto
+3. Execute o comando:
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-No Windows:
+Ou no Windows:
 
-```cmd
-.\mvnw.cmd spring-boot:run
+```bash
+mvnw.cmd spring-boot:run
 ```
 
-A aplicacao sera iniciada em:
+4. A aplicação estará disponível em: `http://localhost:8080`
 
-http://localhost:8080
+### Execução com Docker (Profile PRD)
 
-## Execucao com Docker
+Para executar a aplicação em produção utilizando a imagem publicada no Docker Hub, siga os passos abaixo. Este método atende aos requisitos de configuração por profiles e variáveis de ambiente.
 
-### 1. Baixar a imagem do Docker Hub
+**1. Baixar a imagem do Docker Hub:**
 
 ```bash
 docker pull luametta/cp2-lollapalooza-mweis:latest
 ```
 
-Tambem esta disponivel a tag `1.0.0`:
-
-```bash
-docker pull luametta/cp2-lollapalooza-mweis:1.0.0
-```
-
-Ou, para gerar a imagem localmente a partir do codigo-fonte:
-
-```bash
-docker build -t cp2-lollapalooza-mweis:1.0.0 .
-```
-
-### 2. Executar o container
-
-Caso o banco de dados esteja sendo executado na maquina host, utilize `host.docker.internal` para permitir que o container acesse o banco.
-
-```bash
-docker run -d \
-  --name lollapalooza-api \
-  -p 8080:8080 \
-  -e DB_SERVER_URL=host.docker.internal \
-  -e DB_SERVER_PORT=3306 \
-  -e DB_SCHEMA=lollapalooza \
-  -e DB_USER=root \
-  -e DB_PWD=root_pwd \
-  -e SPRING_PROFILES_ACTIVE=default \
-  luametta/cp2-lollapalooza-mweis:latest
-```
-
-No Windows PowerShell:
-
-```powershell
-docker run -d `
-  --name lollapalooza-api `
-  -p 8080:8080 `
-  -e DB_SERVER_URL=host.docker.internal `
-  -e DB_SERVER_PORT=3306 `
-  -e DB_SCHEMA=lollapalooza `
-  -e DB_USER=root `
-  -e DB_PWD=root_pwd `
-  -e SPRING_PROFILES_ACTIVE=default `
-  luametta/cp2-lollapalooza-mweis:latest
-```
-
-A aplicacao ficara disponivel em:
-
-http://localhost:8080
-
-*Nota: `host.docker.internal` permite que o container acesse servicos executados na maquina host. Em ambientes Linux, dependendo da configuracao do Docker, pode ser necessario utilizar uma configuracao de rede diferente (ex.: `--add-host=host.docker.internal:host-gateway`), ou apontar `DB_SERVER_URL` para o nome do container do MySQL caso ambos estejam na mesma rede Docker (`docker network create` + `--network`).*
-
-### 3. Validar
-
-```bash
-curl http://localhost:8080/dias
-```
-
-## Profiles do Spring Boot
-
-O profile ativo da aplicacao e definido atraves da variavel de ambiente `SPRING_PROFILES_ACTIVE`. A aplicacao possui dois profiles:
-
-### `default`
-
-Profile padrao, usado quando `SPRING_PROFILES_ACTIVE` nao e definida ou e definida como `default`. Configurado em `src/main/resources/application.properties`.
-
-- Cria o banco de dados automaticamente, se ele nao existir (`createDatabaseIfNotExist=true`).
-- Cria/atualiza as tabelas automaticamente (`spring.jpa.hibernate.ddl-auto=update`).
-- `spring.jpa.show-sql=true`.
-
-```bash
-export SPRING_PROFILES_ACTIVE=default
-```
-
-### `prd`
-
-Profile de producao, configurado em `src/main/resources/application-prd.properties`.
-
-- Nao cria o banco de dados nem as tabelas automaticamente (`spring.jpa.hibernate.ddl-auto=none`, sem `createDatabaseIfNotExist`).
-- O banco e as tabelas precisam existir antes de a aplicacao subir — use o script `src/main/resources/migration.sql`.
-- `spring.jpa.show-sql=false`.
-- Todas as variaveis de conexao (`DB_SERVER_URL`, `DB_SERVER_PORT`, `DB_SCHEMA`, `DB_USER`, `DB_PWD`) sao obrigatorias, sem valor padrao.
-
-```bash
-export SPRING_PROFILES_ACTIVE=prd
-```
-
-Ao executar com Docker:
+**2. Executar o container:**
 
 ```bash
 docker run -d \
@@ -184,132 +103,114 @@ docker run -d \
   -e DB_PWD=root_pwd \
   luametta/cp2-lollapalooza-mweis:latest
 ```
+*(Nota: `host.docker.internal` permite que o container acesse o banco de dados rodando na sua máquina local. Em ambientes Linux, pode ser necessário usar `--add-host=host.docker.internal:host-gateway`)*
 
-### Criando o schema para o profile `prd`
+---
 
-Antes de subir a aplicacao no profile `prd`, aplique o script de criacao das tabelas em um MySQL acessivel:
+## 🔑 Variáveis de Ambiente Necessárias
 
-```bash
-mysql -h <host> -P <porta> -u <usuario> -p < src/main/resources/migration.sql
-```
+A aplicação utiliza variáveis de ambiente para configurar a conexão com o banco de dados, especialmente no profile `prd`:
 
-Ou, se o MySQL estiver rodando em um container:
-
-```bash
-docker exec -i <container_mysql> mysql -uroot -p<senha> < src/main/resources/migration.sql
-```
-
-## Swagger / OpenAPI
-
-Com a aplicacao em execucao (qualquer profile), a documentacao Swagger fica disponivel na raiz:
-
-http://localhost:8080/swagger-ui.html
-
-Especificacao OpenAPI (JSON):
-
-http://localhost:8080/v3/api-docs
-
-## Endpoints da API
-
-### `/dias`
-
-| Metodo | Rota | Descricao |
+| Variável | Descrição | Exemplo |
 | :--- | :--- | :--- |
-| POST | `/dias` | Cadastra um dia |
-| GET | `/dias` | Lista todos os dias |
-| GET | `/dias/{id}` | Busca um dia por id |
-| PUT | `/dias/{id}` | Atualiza um dia |
-| DELETE | `/dias/{id}` | Remove um dia |
+| `SPRING_PROFILES_ACTIVE` | Define o profile de execução (obrigatório `prd` para produção) | `prd` |
+| `DB_SERVER_URL` | Endereço do servidor do banco de dados | `host.docker.internal` |
+| `DB_SERVER_PORT` | Porta do banco de dados | `3306` |
+| `DB_SCHEMA` | Nome do banco de dados (deve existir previamente) | `lollapalooza` |
+| `DB_USER` | Usuário do banco de dados | `root` |
+| `DB_PWD` | Senha do banco de dados | `root_pwd` |
 
-```json
-// POST /dias
-{
-  "id": 1,
-  "data": "2026-03-20"
-}
+> ⚠️ **Atenção sobre o profile `prd`**: Conforme os requisitos do projeto, o profile `prd` está configurado com `spring.jpa.hibernate.ddl-auto=none`. Isso significa que **o banco de dados e as tabelas devem ser criados manualmente antes da execução** (utilize o script `src/main/resources/migration.sql`). A aplicação não criará a estrutura do banco automaticamente neste modo.
+
+---
+
+## 📚 Documentação da API (Swagger / OpenAPI)
+
+Com a aplicação em execução (local ou via Docker), a documentação interativa dos endpoints estará disponível em:
+
+* **Swagger UI**: http://localhost:8080/swagger-ui.html
+* **OpenAPI JSON**: http://localhost:8080/v3/api-docs
+
+---
+
+## 🔗 Endpoints Principais
+
+### 📅 Dia
+
+* `GET /dias` → Lista todos os dias
+* `GET /dias/{id}` → Busca um dia por ID
+* `POST /dias` → Cria um novo dia
+* `PUT /dias/{id}` → Atualiza um dia
+* `DELETE /dias/{id}` → Remove um dia
+
+### 🎤 Palco
+
+* `GET /palcos` → Lista todos os palcos
+* `GET /palcos/{id}` → Busca um palco por ID
+* `POST /palcos` → Cria um novo palco
+* `PUT /palcos/{id}` → Atualiza um palco
+* `DELETE /palcos/{id}` → Remove um palco
+
+---
+
+## 🧪 Testes
+
+Os testes estão localizados em:
+
+```text
+src/test/java/br/fiap/cp1/lollapalooza
 ```
 
-### `/palcos`
+Para executar:
 
-| Metodo | Rota | Descricao |
-| :--- | :--- | :--- |
-| POST | `/palcos` | Cadastra um palco |
-| GET | `/palcos` | Lista todos os palcos |
-| GET | `/palcos/{id}` | Busca um palco por id |
-| PUT | `/palcos/{id}` | Atualiza um palco |
-| DELETE | `/palcos/{id}` | Remove um palco |
-
-```json
-// POST /palcos
-{
-  "id": 1,
-  "nome": "Palco Mundo",
-  "capacidade": 100000
-}
-```
-
-## Docker — comandos uteis
-
-### Criar a imagem
 ```bash
-docker build -t cp2-lollapalooza-mweis:1.0.0 .
+./mvnw test
 ```
 
-### Executar o container
+---
+
+## ⚙️ Configurações de Profiles
+
+As configurações da aplicação são divididas por profiles para atender diferentes ambientes:
+
+* **`application.properties` (default)**: Configurado para desenvolvimento. Cria o banco e as tabelas automaticamente (`ddl-auto=update`).
+* **`application-prd.properties` (prd)**: Configurado para produção. **Não** cria banco/tabelas automaticamente (`ddl-auto=none`), exigindo que a estrutura já exista.
+
+---
+
+## 📦 Build do Projeto
+
+Para gerar o `.jar` localmente:
+
 ```bash
-docker run -d \
-  --name lollapalooza-api \
-  -p 8080:8080 \
-  -e DB_SERVER_URL=host.docker.internal \
-  -e DB_SERVER_PORT=3306 \
-  -e DB_SCHEMA=lollapalooza \
-  -e DB_USER=root \
-  -e DB_PWD=root_pwd \
-  -e SPRING_PROFILES_ACTIVE=default \
-  cp2-lollapalooza-mweis:1.0.0
+./mvnw clean package
 ```
 
-### Publicar no Docker Hub
+O arquivo será gerado em:
+
+```text
+target/lollapalooza-0.0.1-SNAPSHOT.jar
+```
+
+Para executar o `.jar` diretamente:
+
 ```bash
-docker login
-docker tag cp2-lollapalooza-mweis:1.0.0 luametta/cp2-lollapalooza-mweis:1.0.0
-docker push luametta/cp2-lollapalooza-mweis:1.0.0
+java -jar target/lollapalooza-0.0.1-SNAPSHOT.jar
 ```
 
-### Listar containers em execucao
-```bash
-docker ps
-```
+---
 
-### Parar e remover o container
-```bash
-docker stop lollapalooza-api
-docker rm lollapalooza-api
-```
+## 👨‍💻 Autores
 
-### Ver logs
-```bash
-docker logs -f lollapalooza-api
-```
+Projeto acadêmico desenvolvido para estudo de APIs REST com Spring Boot, Microservices e Web Engineering.
 
-## Seguranca
+* **Luana Metta Ribeiro Fernandes** - RM: 558314
+* **Luísa Souza Santos** - RM: 557799
 
-Nao versione credenciais reais no repositorio.
+---
 
-Recomenda-se utilizar um arquivo `.env` local para desenvolvimento e adiciona-lo ao `.gitignore`:
+## 📄 Licença
 
-```
-.env
-```
+Este projeto é de uso educacional.
 
-Exemplo de conteudo:
-
-```env
-DB_SERVER_URL=localhost
-DB_SERVER_PORT=3306
-DB_SCHEMA=lollapalooza
-DB_USER=root
-DB_PWD=root_pwd
-SPRING_PROFILES_ACTIVE=default
-```
-```
+---
